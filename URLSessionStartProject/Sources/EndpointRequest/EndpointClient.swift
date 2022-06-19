@@ -28,8 +28,7 @@ public final class EndpointClient {
     // MARK: - Private Properties
 
     private let applicationSettings: ApplicationSettingsService
-    private var masterServerURL: String { "https://api.magicthegathering.io" }
-//    private var masterServerURL: String { "http://localhost:5055" }
+    private var masterServerURL: String { "https://gateway.marvel.com" }
 
     // MARK: - Initialization
 
@@ -110,7 +109,7 @@ public final class EndpointClient {
             requestURL = baseURL.appendingPathComponent(path)
         }
         if let queryItems = queryItems {
-            var urlComponents = URLComponents(string: requestURL.absoluteString) // "https://api.magicthegathering.io/v1/cards?name=Black%20Lotus"
+            var urlComponents = URLComponents(string: requestURL.absoluteString)
             urlComponents?.queryItems = queryItems
             guard let newRequestURL = urlComponents?.url else {
                 return nil
