@@ -20,13 +20,25 @@ class ViewController: UIViewController {
     
     func executeCall() {
         let endpoint = GetNameEndpoint()
-        let completion: EndpointClient.ObjectEndpointCompletion<String> = { result, response in
+        let completion: EndpointClient.ObjectEndpointCompletion<Cards> = { result, response in
             guard let responseUnwrapped = response else { return }
 
             print("\n\n response = \(responseUnwrapped.allHeaderFields) ;\n \(responseUnwrapped.statusCode) \n")
             switch result {
-            case .success(let team):
-                print("team = \(team)")
+            case .success(let card):
+                print("Полученные карты:\n")
+                for card in card.cards {
+                    print("Имя карты: \(card.name)")
+                    print("Тип карты: \(card.type)")
+                    if let manaCost = card.manaCost {
+                        print("Стоимость маны: \(manaCost)")
+                    }
+                    print("Редкость: \(card.rarity)")
+                    if let originalType = card.originalType {
+                        print("Исходный тип: \(originalType)")
+                    }
+                    print("Название сета: \(card.setName)\n")
+                }
                 
             case .failure(let error):
                 print(error)
@@ -39,10 +51,10 @@ class ViewController: UIViewController {
 
 }
 
-final class GetNameEndpoint: ObjectResponseEndpoint<String> {
+final class GetNameEndpoint: ObjectResponseEndpoint<Cards> {
     
     override var method: RESTClient.RequestType { return .get }
-    override var path: String { "/v1/public/characters" }
+    override var path: String { "/v1/cards" }
 //    override var queryItems: [URLQueryItem(name: "id", value: "1")]?
     
     private func MD5(string: String) -> String {
@@ -54,10 +66,8 @@ final class GetNameEndpoint: ObjectResponseEndpoint<String> {
     override init() {
         super.init()
 
-        queryItems = [URLQueryItem(name: "name", value: "Spider-Man"),
-                              URLQueryItem(name: "ts", value: "1"),
-                              URLQueryItem(name: "apikey", value: "a447e14ceeb375a71db2c9389cedcf44"),
-                              URLQueryItem(name: "hash", value: "1ba81931515382b3e789640e72276996")]
+        queryItems = [
+            URLQueryItem(name: "name", value: "Black Lotus|Opt")]
     }
     
 }
