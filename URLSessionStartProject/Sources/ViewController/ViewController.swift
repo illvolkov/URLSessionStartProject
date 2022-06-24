@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CryptoKit
 
 class ViewController: UIViewController {
 
@@ -41,13 +42,22 @@ class ViewController: UIViewController {
 final class GetNameEndpoint: ObjectResponseEndpoint<String> {
     
     override var method: RESTClient.RequestType { return .get }
-    override var path: String { "/v1/cards" }
+    override var path: String { "/v1/public/characters" }
 //    override var queryItems: [URLQueryItem(name: "id", value: "1")]?
+    
+    private func MD5(string: String) -> String {
+        let digest = Insecure.MD5.hash(data: string.data(using: .utf8)!)
+        
+        return digest.map { String(format: "%02hhx", $0) }.joined() // timestamp + private key + public key (правильный порядок)
+    }
     
     override init() {
         super.init()
 
-        queryItems = [URLQueryItem(name: "name", value: "Black Lotus")]
+        queryItems = [URLQueryItem(name: "name", value: "Spider-Man"),
+                              URLQueryItem(name: "ts", value: "1"),
+                              URLQueryItem(name: "apikey", value: "a447e14ceeb375a71db2c9389cedcf44"),
+                              URLQueryItem(name: "hash", value: "1ba81931515382b3e789640e72276996")]
     }
     
 }
