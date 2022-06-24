@@ -20,13 +20,25 @@ class ViewController: UIViewController {
     
     func executeCall() {
         let endpoint = GetNameEndpoint()
-        let completion: EndpointClient.ObjectEndpointCompletion<String> = { result, response in
+        let completion: EndpointClient.ObjectEndpointCompletion<Cards> = { result, response in
             guard let responseUnwrapped = response else { return }
 
             print("\n\n response = \(responseUnwrapped.allHeaderFields) ;\n \(responseUnwrapped.statusCode) \n")
             switch result {
-            case .success(let team):
-                print("team = \(team)")
+            case .success(let card):
+                print("Полученные карты:\n")
+                for card in card.cards {
+                    print("Имя карты: \(card.name)")
+                    print("Тип карты: \(card.type)")
+                    if let manaCost = card.manaCost {
+                        print("Стоимость маны: \(manaCost)")
+                    }
+                    print("Редкость: \(card.rarity)")
+                    if let originalType = card.originalType {
+                        print("Исходный тип: \(originalType)")
+                    }
+                    print("Название сета: \(card.setName)\n")
+                }
                 
             case .failure(let error):
                 print(error)
@@ -39,7 +51,7 @@ class ViewController: UIViewController {
 
 }
 
-final class GetNameEndpoint: ObjectResponseEndpoint<String> {
+final class GetNameEndpoint: ObjectResponseEndpoint<Cards> {
     
     override var method: RESTClient.RequestType { return .get }
     override var path: String { "/v1/cards" }
